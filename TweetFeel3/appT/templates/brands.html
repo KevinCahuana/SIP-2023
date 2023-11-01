@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TweetFeel - Brands</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>TweetFeel</h1>
+    </header>
+
+    <main>
+        <h2>Brands</h2>
+
+        <ul>
+        {% for brand in brands %}
+            <li>
+                <a href="/tweets/{{ brand.id }}">
+                    <img src="/static/images/brands/{{ brand.id }}.png" alt="{{ brand.name }}" width="50" height="50">
+                    {{ brand.name }}
+                </a>
+            </li>
+        {% endfor %}
+        </ul>
+
+        <div class="add-brand">
+            <h3>Add a brand</h3>
+            <form action="/add-brand" method="post">
+                <input type="text" name="brand_name" placeholder="Brand name">
+                <button type="submit">Add brand</button>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <p>Copyright &copy; 2023 TweetFeel</p>
+    </footer>
+</body>
+</html>
