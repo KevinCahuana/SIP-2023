@@ -64,7 +64,8 @@ def register():
 # Ruta de marcas
 @bp.route("/brands")
 def brands():
-    brands = Brand.query.all()
+    #brands = UserBrand.query.filter_by(user_id=current_user.id).all()
+    brands = Brand.query.join(UserBrand).filter(UserBrand.user_id == current_user.id).all()
     return render_template("brands.html", brands=brands)
 
 # Ruta de tweets
