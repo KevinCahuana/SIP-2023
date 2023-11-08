@@ -1,32 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>TweetFeel - Login</title>
+    <title id="titulo">TweetFeel</title>
     <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 <body>
-    <header>
-        <h1>TweetFeel</h1>
-    </header>
-
-    <main>
-        <h2>Login</h2>
-
-        <form action="/login" method="post">
-            <input type="text" name="username" placeholder="Username">
-            <input type="password" name="password" placeholder="Password">
-            <button type="submit">Login</button>
-        </form>
-
-
-            <div class="alert error">
-                {{ error }}
-            </div>
-
-    </main>
-
-    <footer>
-        <p>Copyright &copy; 2023 TweetFeel</p>
-    </footer>
+    <div class="form" action="/login" method="post">
+        <div class="title">TweetFeel</div>
+        <div class="subtitle">Inicia tu camino</div>
+        <div class="input-container ic1">
+          <input id="firstname" class="input" type="text" placeholder=" " />
+          <div class="cut"></div>
+          <label for="Usuario" class="placeholder">Usuario</label>
+        </div>
+        <div class="input-container ic2">
+          <input id="password" class="input" type="text" placeholder=" " />
+          <div class="cut"></div>
+          <label for="lastname" class="placeholder">Password</label>
+        </div>
+        <button type="submit" class="submit">Iniciar Sesion</button>
+        <button type="text" class="submit">Registrarse</button>
+      </div>
+          <footer>
+              <p>Copyright &copy; 2023 TweetFeel</p>
+          </footer>
 </body>
 </html>
