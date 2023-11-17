@@ -229,10 +229,13 @@ def apply_filters(tweets, start_date, end_date, selected_sentiments, priority_fi
 
     # Apply Date Range Filter
     if start_date and end_date:
-        start_date = datetime.strptime(start_date, "%Y-%m-%d %H:%M:%S")
-        end_date = datetime.strptime(end_date, "%Y-%m-%d %H:%M:%S")
+        if type(start_date) is str:
+            start_date = datetime.strptime(start_date, "%Y-%m-%d %H:%M:%S")
+        if type(end_date) is str:  
+            end_date = datetime.strptime(end_date, "%Y-%m-%d %H:%M:%S")
+
         print("dates")
-        print(start_date)
+        print(type(start_date))
         print(end_date)
         filtered_tweets = [tweet for tweet in filtered_tweets if start_date <= tweet.created_at <= end_date]
 
@@ -256,16 +259,17 @@ def brand_tweets(brand_id):
         # Get filter parameters from the form
         start_date = request.form.get('start_date') + " 00:00:00"
         end_date = request.form.get('end_date') + " 00:00:00"
+        print(type(start_date))
+        print(start_date)
 
         num_tweets = request.form.get('num_tweets') 
         
-        print(start_date)
-        print(end_date)
+        print(type(start_date))
         if start_date == " 00:00:00":
             
             start_date =  (datetime.now() - timedelta(days=365)).strftime("%Y-%m-%d %H:%M:%S")
-            print(start_date)
         else:
+            print(type(start_date))
             start_date = datetime.strptime(start_date, "%Y-%m-%d %H:%M:%S")
 
         if end_date == " 00:00:00":
