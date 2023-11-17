@@ -5,12 +5,44 @@ body {
   justify-content: center;
   height: 100vh;
 }
- 
+.parent{
+  border:  5px solid whitesmoke;
+  width: 1000px;
+  height: 120px;
+  box-sizing: border-box;
+  position: relative;
+  padding-left: 10px;
+  margin-right: 30px;
+}
+ .container {
+  width: 33ch;
+  animation: typing 2s steps(22), blink .5s step-end infinite alternate;
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 3px solid;
+  font-family: monospace;
+  font-size: 4em;
+  color: white;
+  position:absolute;
+  top:0;
+}
+
+@keyframes typing {
+  from {
+    width: 0
+  }
+}
+    
+@keyframes blink {
+  50% {
+    border-color: transparent
+  }
+}
 .form {
   background-color: #15172b;
   border-radius: 20px;
   box-sizing: border-box;
-  height: 500px;
+  height: 400x;
   padding: 20px;
   width: 320px;
   margin-top: 10px;
