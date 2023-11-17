@@ -40,3 +40,16 @@ def analyze_sentiment(tweets):
         sentiment_distribution[sentiment_type] /= len(tweets)
 
     return sentiment_distribution
+
+
+def filter_tweets(tweets, start_date=None, end_date=None, sentiment=None):
+    filtered_tweets = tweets
+
+    if start_date and end_date:
+        filtered_tweets = [tweet for tweet in filtered_tweets if start_date <= tweet.created_at <= end_date]
+
+    if sentiment:
+        filtered_tweets = [tweet for tweet in filtered_tweets if tweet.sentiment == sentiment]
+
+    return filtered_tweets
+

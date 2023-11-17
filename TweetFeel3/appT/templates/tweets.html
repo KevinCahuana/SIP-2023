@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>TweetFeel</title>
+    <link href="{{ url_for('static', filename='css/styles_tweets.css') }}" rel="stylesheet">
+
+    <!-- Asegúrate de tener Chart.js correctamente enlazado en tu proyecto -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <header>
+        <h1>TweetFeel</h1>
+    </header>
+        <!-- Add a form for filters at the top of the page -->
+    <section class="filters">
+        <form method="POST" action="{{ url_for('routes.brand_tweets', brand_id=brand_id) }}">
+            <label for="start_date">Start Date:</label>
+            <input type="date" id="start_date" name="start_date">
+
+            <label for="end_date">End Date:</label>
+            <input type="date" id="end_date" name="end_date">
+
+            <label>Sentiments:</label>
+            <select multiple name="sentiments">
+                <option value="Positivo">Positivo</option>
+                <option value="Negativo">Negativo</option>
+                <option value="Neutral">Neutral</option>
+            </select>
+
+            <label for="priority_filter">Priority:</label>
+            <select name="priority_filter">
+                <option value="recent">Most Recent</option>
+                <option value="popular">Most Popular</option>
+            </select>
+
+            <label for="num_tweets">Number of Tweets:</label>
+            <input type="number" id="num_tweets" name="num_tweets" min="1" max="100" value="5">
+
+            <button type="submit">Apply Filters</button>
+        </form>
+    </section>
+
+    <!-- Rest of the HTML remains unchanged -->
+
+
+
+
+    <section class="tweets">
+        <h2>Tweets</h2>
+        <div class="tweets-list">
+            {% for tweet in tweets %}
+                <li>
+                    <div class="tweet-content">
+                        <p>{{ tweet.text }}</p>
+                        <p class="tweet-author">@{{ tweet.user_name }}</p>
+                        <p class="tweet-date">{{ tweet.created_at }}</p>
+                    </div>
+                </li>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="line-chart">
+        <h2>Evolución de sentimientos</h2>
+        <canvas id="line-chart"></canvas>
+    </section>
+    
+    <section class="pie-chart">
+        <h2>Distribución de sentimientos</h2>
+        <canvas id="pie-chart"></canvas>
+    </section>
+
+    <script>
+        
+        
+        var pie_chart_d="{{pie_chart_data}}"
+        var correctedString1 = pie_chart_d.replace(/&#34;/g, '"');
+        var pie_chart_data = JSON.parse(correctedString1); // The JSON object as a string
+        var line_chart_d="{{line_chart_data}}"
+        var correctedString2 = line_chart_d.replace(/&#34;/g, '"');
+        var line_chart_data = JSON.parse(correctedString2); // The JSON object as a string
+        //var pie_chart_data = JSON.parse('{"datasets": [ {"data": [5, 9, 8] } ] ,"labels": ["Positivos", "Negativos", "Neutros"] }'); // The JSON object as a string
+        //var line_chart_data = JSON.parse('{"labels": ["2023-11-09", "2023-11-10"], "datasets": [{"label": "Positivos", "data": [0, 5]}, {"label": "Negativos", "data": [0, 9]}, {"label": "Neutros", "data": [1, 7]}]}'); // The JSON object as a string
+        
+        var pieChart = new Chart(document.getElementById('pie-chart'), {
+            type: 'pie',
+            data: pie_chart_data,
+        });
+
+        var lineChart = new Chart(document.getElementById('line-chart'), {
+            type: 'line',
+            data: line_chart_data,
+        });
+    </script>
+</body>
+
+</html>

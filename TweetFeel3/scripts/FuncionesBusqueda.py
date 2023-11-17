@@ -9,7 +9,7 @@ from twscrape.logger import set_log_level
 def tweetTOjson(tweet):
     return ({
                         'content' : tweet.rawContent,
-                        #'user_name ': tweet.user.username,
+                        'user_name': tweet.user.username,
                         #'user_followers ': tweet.user.friendsCount,
                         #'user_following_count ': tweet.user.followersCount,
                         #'user_total_tweets ': tweet.user.statusesCount,
@@ -18,8 +18,12 @@ def tweetTOjson(tweet):
                         #'user_screen_name ': tweet.user.displayname.lower(),
                         #'user_image ': tweet.user.profileImageUrl.replace('_normal', '_bigger'),
                         #'user_ratio ': get_ratio(tweet.user.friendsCount, tweet.user.followersCount),
-                        #'id_tweet ': tweet.id,
-                        #'retweet_count ': tweet.retweetCount,
+                        "created" : tweet.date,
+                        'id_tweet': int(tweet.id),
+                        'retweet_count': int(tweet.retweetCount),
+                        'reply_count': int(tweet.replyCount),
+                        'like_count': int(tweet.likeCount),
+                        'quote_count': int(tweet.quoteCount),
                         #'favorite_count ': tweet.user.favouritesCount,
         })
 def get_ratio(followers, following):
@@ -40,7 +44,7 @@ async def Buscar_Palabra_Perfil(api, keyword,fecha_i,fecha_f,perfil, max_tweets=
     return tweets
 async def Buscar_Palabra_Fechas(api, keyword,fecha_i,fecha_f, max_tweets=100):
     tweets = []
-    async for tweet in api.search(keyword+" since:"+fecha_i+" until:"+fecha_f, limit=max_tweets): 
+    async for tweet in api.search(keyword+" since:"+fecha_i+" until:"+fecha_f+" filter:has_engagement", limit=max_tweets): 
         tweets.append(tweetTOjson(tweet))
     return tweets
 async def Buscar_Querry(api, q, max_tweets=100):

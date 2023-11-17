@@ -2,7 +2,80 @@
 <html>
 <head>
     <title>TweetFeel - Brands</title>
-    <link rel="stylesheet" href="/static/css/styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #0077b6;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        h1, h2, h3 {
+            color: #333;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #0077b6;
+        }
+
+        .add-brand {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            background-color: #f2f2f2;
+        }
+
+        .add-brand h3 {
+            margin-top: 0;
+        }
+
+        .add-brand input[type="text"] {
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .add-brand button[type="submit"] {
+            padding: 10px 20px;
+            background-color: #0077b6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        footer {
+            background-color: #f8f9fa;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -15,8 +88,7 @@
         <ul>
         {% for brand in brands %}
             <li>
-                <a href="/tweets/{{ brand.id }}">
-                    <img src="/static/images/brands/{{ brand.id }}.png" alt="{{ brand.name }}" width="50" height="50">
+                <a href="/brands/{{ brand.id }}">
                     {{ brand.name }}
                 </a>
             </li>
@@ -33,7 +105,7 @@
     </main>
 
     <footer>
-        <p>Copyright &copy; 2023 TweetFeel</p>
+        <p>&copy; 2023 TweetFeel</p>
     </footer>
 </body>
 </html>
