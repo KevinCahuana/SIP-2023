@@ -2,29 +2,35 @@
 <html>
 <head>
     <title id="titulo">TweetFeel</title>
-    <link rel="stylesheet" href="\static\css\styles_login.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_login.css') }}">
 </head>
 <body>
   <section class="parent">
     <div class="container">TweetFeel, el aliado en tu camino</div>
   </section>
-    <div class="form" action="/login" method="post">
-        <div class="title">TweetFeel</div>
-        <div class="input-container ic1">
-          <input id="firstname" class="input" type="text" placeholder=" " />
-          <div class="cut"></div>
-          <label for="Usuario" class="placeholder">Usuario</label>
-        </div>
-        <div class="input-container ic2">
-          <input id="password" class="input" type="text" placeholder=" " />
-          <div class="cut"></div>
-          <label for="lastname" class="placeholder">Password</label>
-        </div>
-        <button type="submit" class="submit">Iniciar Sesion</button>
-        <button type="text" class="submit">Registrarse</button>
+  <div class="form">
+    <form action="/login" method="post">
+      <div class="title">TweetFeel</div>
+      <div class="input-container ic1">
+        <input id="username" name="username" class="input" type="text" placeholder=" " />
+        <div class="cut"></div>
+        <label for="username" class="placeholder">Usuario</label>
       </div>
-          <footer>
-              <p>Copyright &copy; 2023 TweetFeel</p>
-          </footer>
+      <div class="input-container ic2">
+        <input id="password"  name="password" class="input" type="text" placeholder=" " />
+        <div class="cut"></div>
+        <label for="password" class="placeholder">Password</label>
+      </div>
+      <button type="submit" class="submit">Iniciar Sesion</button>
+    </form>
+    <div class="error-message">
+      <p class="error-text" style="color: red; font-family: 'Poppins', sans-serif;">{{ error }}</p>
+    </div>
+    <button type="text" class="submit" onclick="window.location.href='/register'">Registrarse</button>
+  </div>
+  <footer>
+    <p>Copyright &copy; 2023 TweetFeel</p>
+  </footer>
 </body>
 </html>
+

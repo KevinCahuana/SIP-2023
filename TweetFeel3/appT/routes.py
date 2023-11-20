@@ -1,6 +1,7 @@
 from flask import Flask, Blueprint, render_template, redirect, url_for, request
 from flask_login import login_user, logout_user, current_user
 from appT.utils import filter_tweets
+from appT.utils import Filter_Tweet
 from appT.models import User, Brand, Tweet, db,UserBrand
 from appT.utils import get_tweets_by_brand, analyze_sentiment
 from flask_sqlalchemy import SQLAlchemy
@@ -35,15 +36,22 @@ def login():
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
-        #print(username)
-        #print(password)
+        print(username)
+        print(password)
 
         user = User.query.filter_by(username=username).first()
-        if user and user.check_password(password):
-            login_user(user)
-            return redirect(url_for('routes.brands'))
+        if user and password:
+            if user.check_password(password):
+                login_user(user)
+                return redirect(url_for('routes.brands'))
+            else:
+                error = "Invalid username or password."
+                print("error")
+                return render_template('login.html', error=error)
         else:
+            
             error = "Invalid username or password."
+            print("error")
             return render_template('login.html', error=error)
     else:
         return render_template('login.html')
@@ -55,8 +63,47 @@ def register():
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
+        mail=request.form.get("mail")
+        print(username)
+        print(password)
+        print(mail)
+        if username==None or password == None or mail==None:
+            error = "Invalid username or password."
+            return render_template('register.html', error=error)
+        if username =="" or password =="" or mail=="": 
+            error = "Invalid username or password."
+            return render_template('register.html', error=error)
+        if len(password)<7:
+            error = "Password must be at least 8 characters."
+            return render_template('register.html', error=error)
+        if len(username)<3:
+            error = "Username must be at least 3 characters."
+            return render_template('register.html', error=error)
+        if len(mail)<5:
+            error = "Mail must be at least 4 characters."
+            return render_template('register.html', error=error)
+        if "@" not in mail:
+            error = "Invalid mail."
+            return render_template('register.html', error=error)
+        if len(username)>20:    
+            error = "Username must be less than 20 characters."
+            return render_template('register.html', error=error)
+        if len(mail)>50:    
+            error = "Mail must be less than 50 characters."
+            return render_template('register.html', error=error)
+        if len(password)>20:
+            error = "Password must be less than 20 characters."
+            return render_template('register.html', error=error)
+        user = User.query.filter_by(username=username).first()
+        if user!=None:
+            error = "Username already exists."
+            return render_template('register.html', error=error)
+        Findmail = User.query.filter_by(mail=mail).first()
+        if Findmail!=None:  
+            error = "Mail already exists."
+            return render_template('register.html', error=error)
 
-        user = User(username=username, password=password)
+        user = User(username=username, password=password, mail=mail)
         db.session.add(user)
         db.session.commit()
         login_user(user)
@@ -74,6 +121,7 @@ def brands():
     #print('brands')
     #brands = UserBrand.query.filter_by(user_id=current_user.id).all()
     brands = Brand.query.join(UserBrand).filter(UserBrand.user_id == current_user.id).all()
+
     return render_template("brands.html", brands=brands)
 
 
@@ -89,10 +137,12 @@ def logout():
 # Ruta para agregar una marca
 @bp.route("/add-brand", methods=["POST"])
 def add_brand():
-    
+
     from datetime import datetime, timedelta
     brand_name = request.form.get("brand_name")
+    brand_description = request.form.get("brand_description")
     print(brand_name)
+
 
     # Verificar si la marca ya existe
     brand = Brand.query.filter_by(name=brand_name).first()
@@ -101,16 +151,10 @@ def add_brand():
         brand = Brand(name=brand_name)
         db.session.add(brand)
         db.session.commit()
-        #popular base de datos
-        #FB.Reloggear()
+
+        FB.Reloggear()
         current_date = datetime.now()
-        one_year_ago = current_date - timedelta(days=5)
-        #current_date = current_date.strftime("%Y-%m-%d")
-        #one_year_ago = one_year_ago.strftime("%Y-%m-%d")
-        #current_date = str(current_date)
-        #print(current_date)
-        #one_year_ago = str(one_year_ago)
-        #print(one_year_ago)
+
         tweets=[]
         
         for i in range(12, -1, -1):
@@ -122,18 +166,17 @@ def add_brand():
             print(month_f)
             month_i = month_i.strftime("%Y-%m-%d")
             month_f = month_f.strftime("%Y-%m-%d")
-            tweets = tweets+ FB.BuscarPalabraFechas("+"+brand_name, month_i, month_f, 5)
+            tweets = tweets+ FB.BuscarPalabraFechas("+"+brand_name, month_i, month_f, 1)
 
-        #current_date = datetime.now()
-        #five_ago = current_date - timedelta(days=5)
-        #current_date = current_date.strftime("%Y-%m-%d")
-        #five_ago = five_ago.strftime("%Y-%m-%d")
-        #weets = tweets+ FB.BuscarPalabraFechas("+"+brand_name, five_ago, current_date, 3)
-
+            
+        tweets_filtrados = []
+        for tweet in tweets:
+            if Filter_Tweet(tweet,brand_name,brand_description):
+                tweets_filtrados.append(tweet)
 
 
    
-        for tweet in tweets:
+        for tweet in tweets_filtrados:
             print('tweet')
             print(tweet)
             formato_deseado = "%Y-%m-%d %H:%M:%S %Z"  # Ejemplo: "2023-01-16 01:25:59 UTC"
@@ -257,22 +300,22 @@ def brand_tweets(brand_id):
     num_tweets=5
     if request.method == 'POST':
         # Get filter parameters from the form
-        start_date = request.form.get('start_date') + " 00:00:00"
-        end_date = request.form.get('end_date') + " 00:00:00"
+        start_date = request.form.get('start_date')
+        end_date = request.form.get('end_date') 
         print(type(start_date))
         print(start_date)
 
         num_tweets = request.form.get('num_tweets') 
         
         print(type(start_date))
-        if start_date == " 00:00:00":
+        if start_date==None:
             
             start_date =  (datetime.now() - timedelta(days=365)).strftime("%Y-%m-%d %H:%M:%S")
         else:
             print(type(start_date))
             start_date = datetime.strptime(start_date, "%Y-%m-%d %H:%M:%S")
 
-        if end_date == " 00:00:00":
+        if end_date ==None:
             end_date =datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         else:
             end_date = datetime.strptime(end_date, "%Y-%m-%d %H:%M:%S")
@@ -280,9 +323,12 @@ def brand_tweets(brand_id):
         # Convertir el string a un objeto datetime
         
         
-        selected_sentiments = request.form.getlist('sentiments')
+        selected_sentiments = request.form.getlist('sentiment')
+        print(selected_sentiments)
         if selected_sentiments == []:
             selected_sentiments = ['Positivo', 'Negativo', 'Neutral']
+        print("hola")
+        print(selected_sentiments)
 
         priority_filter = request.form.get('priority_filter')
         if priority_filter == None:

@@ -33,8 +33,21 @@ def get_ratio(followers, following):
     except:
         return 0
 async def relog_accounts(api):
-    await api.pool.add_account("EnzoElAuditor", "EA0715TCPJ", "EmpeladoAuditorEnzo@gmail.com", "EA0715CPJ")
-    await api.pool.add_account("FitoElAuditor", "EA0716TCPJ", "EmpeladoAuditorFito@gmail.com", "EA0716CPJ")
+    await api.pool.delete_accounts("EnzoElAuditor")
+    await api.pool.delete_accounts("FitoElAuditor")
+    await api.pool.delete_accounts("MaximoTpoSem")
+    await api.pool.delete_accounts("tposeminario2023")
+    await api.pool.delete_accounts("MaximoTpoSeminario")
+    await api.pool.delete_accounts("FitoElAuditor")
+    await api.pool.delete_accounts("kekogomez389008")
+    await api.pool.add_account("MaximoTpoSem", "tposeminario2023", "maximotposeminario@gmail.com", "tposeminario2023")
+    await api.pool.add_account("kekogomez389008", "A46538857a", "kekogomez302@gmail.com", "A446538857a")
+    await api.pool.add_account("Daniela78982071", "TpSeminario1234", "danielatpseminario@gmail.com", "Abcd1234Abcd1")
+    #pepetw0504@gmail.com ; pepe_123 : @pepetw0504 : pepe_123
+    await api.pool.add_account("pepetw0504", "pepe_123","pepetw0504@gmail.com","pepe_123" )
+    #danielatpseminario@gmail.com ; Abcd1234Abcd1 : Daniela78982071  : TpSeminario1234
+    #await api.pool.add_account("EnzoElAuditor", "EA0715TCPJ", "EmpeladoAuditorEnzo@gmail.com", "EA0715CPJ")
+    #await api.pool.add_account("FitoElAuditor", "EA0716TCPJ", "EmpeladoAuditorFito@gmail.com", "EA0716CPJ")
     await api.pool.login_all()
     print(await api.pool.accounts_info())
 async def Buscar_Palabra_Perfil(api, keyword,fecha_i,fecha_f,perfil, max_tweets=000):
@@ -42,9 +55,9 @@ async def Buscar_Palabra_Perfil(api, keyword,fecha_i,fecha_f,perfil, max_tweets=
     async for tweet in api.search(keyword+" from:"+perfil+" since:"+fecha_i+" until:"+fecha_f, limit=max_tweets): 
         tweets.append(tweetTOjson(tweet))
     return tweets
-async def Buscar_Palabra_Fechas(api, keyword,fecha_i,fecha_f, max_tweets=100):
+async def Buscar_Palabra_Fechas(api, keyword,fecha_i,fecha_f, max_tweets=10):
     tweets = []
-    async for tweet in api.search(keyword+" since:"+fecha_i+" until:"+fecha_f+" filter:has_engagement", limit=max_tweets): 
+    async for tweet in api.search(keyword+" since:"+fecha_i+" until:"+fecha_f+" filter:has_engagement lang:es OR lang:en", limit=max_tweets): 
         tweets.append(tweetTOjson(tweet))
     return tweets
 async def Buscar_Querry(api, q, max_tweets=100):
@@ -68,7 +81,7 @@ def BuscarMasRecientes(keyword,max_tweets=100):
     tweets = asyncio.run(search_recent_tweets(api, keyword, max_tweets))
     return tweets
 
-def BuscarPalabraFechas(keyword,fecha_i,fecha_f,max_tweets=100): # fecha_i,fecha_f formato 2023-05-31
+def BuscarPalabraFechas(keyword,fecha_i,fecha_f,max_tweets=10): # fecha_i,fecha_f formato 2023-05-31
     api = API()
     tweets = asyncio.run(Buscar_Palabra_Fechas(api, keyword,fecha_i,fecha_f, max_tweets))
     return tweets
@@ -92,3 +105,4 @@ def BuscarPalbraPerfil(keyword,fecha_i,fecha_f,perfil,max_tweets=100): # fecha_i
 
 
 
+#BuscarPalabraFechas("Nike","2022-11-01","2023-11-11",["es"],max_tweets=10)

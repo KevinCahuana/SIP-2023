@@ -19,6 +19,7 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(255), unique=True)
     password = db.Column(db.String(255))  # Almacena el hash de la contraseña
+    mail = db.Column(db.String(255), unique=True)
 
     def set_password(self, password):
         self.password = password

@@ -1,34 +1,41 @@
 <!DOCTYPE html>
 <html>
-        <head>
-            <title id="titulo">TweetFeel 💻</title>
-            <link rel="stylesheet" href="\static\css\styles_registrar.css">
-        </head>
-    <body>
-      <section class="parent">
-        <div class="container">TweetFeel, el aliado en tu camino</div>
-      </section>
-        <div class="form" action="/register" method="post">
-            <div class="title">TweetFeel</div>
-            <div class="input-container ic1">
-              <input id="Usuario" class="input" type="text" placeholder=" " />
-              <div class="cut"></div>
-              <label for="Usuario" class="placeholder">Usuario</label>
-            </div>
-            <div class="input-container ic3">
-                <input id="mail" class="input" type="text" placeholder=" " />
-                <div class="cut"></div>
-                <label for="Mail" class="placeholder">Mail</label>
-              </div>
-            <div class="input-container ic2">
-              <input id="password" class="input" type="text" placeholder=" " />
-              <div class="cut"></div>
-              <label for="password" class="placeholder">Password</label>
-            </div>
-            <button type="submit" class="submit">Registrar</button>
-          </div>
-              <footer>
-                  <p>Copyright &copy; 2023 TweetFeel</p>
-              </footer>
-    </body>
+<head>
+  <title id="titulo">TweetFeel 💻</title>
+  <link rel="stylesheet" href="/static/css/styles_registrar.css">
+</head>
+<body>
+<section class="parent">
+  <div class="container">TweetFeel, el aliado en tu camino</div>
+</section>
+<div class="form">
+  <form action="/register" method="post">
+    <div class="title">TweetFeel</div>
+    <div class="input-container ic1">
+      <input id="Usuario" class="input" type="text" name="username" placeholder=" " />
+      <div class="cut"></div>
+      <label for="Usuario" class="placeholder">Usuario</label>
+    </div>
+    <div class="input-container ic3">
+      <input id="mail" class="input" type="text" name="mail" placeholder=" " />
+      <div class="cut"></div>
+      <label for="Mail" class="placeholder">Mail</label>
+    </div>
+    <div class="input-container ic2">
+      <input id="password" class="input" type="password" name="password" placeholder=" " />
+      <div class="cut"></div>
+      <label for="password" class="placeholder">Password</label>
+    </div>
+    <button type="submit" class="submit">Registrar</button>
+  </form>
+  <div class="error-message">
+    <p class="error-text" style="color: red; font-family: 'Poppins', sans-serif;">{{ error }}</p>
+  </div>
+  <button type="text" class="submit" onclick="window.location.href='/login'">Login</button>
+</div>
+
+<footer>
+  <p>&copy; 2023 TweetFeel</p>
+</footer>
+</body>
 </html>

@@ -53,3 +53,46 @@ def filter_tweets(tweets, start_date=None, end_date=None, sentiment=None):
 
     return filtered_tweets
 
+
+from openai import OpenAI
+
+def Filter_Tweet(tweet,NombreMarca,descripcion):
+    client = OpenAI(
+        # defaults to os.environ.get("OPENAI_API_KEY")
+        #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 -key kevin
+        #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 - key mia
+        api_key="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",
+    )
+
+    chat_completion = client.chat.completions.create(
+        messages=[
+            {
+                "role": "user",
+                "content": f"""
+                Tu trabajo será filtrar tweets que no tienen que ver con una marca.
+                Marca: {NombreMarca}.
+                Descripción de la marca:  {descripcion}
+                Determina si un tweet habla de alguna manera de la marca {NombreMarca}. 
+                Tweet : “ {tweet}”.
+                Menciones indirectas también cuentan como validas
+                Si tiene que ver con {NombreMarca} responder SI.
+                Si no tiene que ver con {NombreMarca} responder NO.
+                Solo puedes responder SI o NO.
+                Ninguna otra respuesta es aceptada.
+                """,
+            }
+        ],
+        model="gpt-3.5-turbo",
+    )
+    print("Tweet ")
+    print(tweet)
+    print("respuesta")
+    print(chat_completion.choices[0].message.content)
+    # Extract the sentiment from the response
+    filtrado = chat_completion.choices[0].message.content.strip()
+
+    if filtrado == "SI":
+        return True
+    else:
+        return False
+

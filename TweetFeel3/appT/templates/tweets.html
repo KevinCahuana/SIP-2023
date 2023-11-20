@@ -1,101 +1,323 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <title>TweetFeel</title>
-    <link href="{{ url_for('static', filename='css/styles_tweets.css') }}" rel="stylesheet">
-
-    <!-- Asegúrate de tener Chart.js correctamente enlazado en tu proyecto -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>Sentiment Analysis Dashboard</title>
 </head>
-
 <body>
+    <style>
+        /* Reset basic styles */
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+        }
 
-    <header>
-        <h1>TweetFeel</h1>
-    </header>
-        <!-- Add a form for filters at the top of the page -->
-    <section class="filters">
+        /* Styles for the header */
+        header {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 15px;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        /* Styles for the filters section */
+        .filters {
+            margin: 20px;
+            display: flex;
+            flex-direction: row; /* Added flex-direction: row; */
+            justify-content: space-between;
+            width: 100%;
+            max-width: 1200px;
+
+        }
+
+        .form-column {
+            margin-bottom: 15px;
+            display: flex; /* Added display: flex; */
+            flex-direction: row; /* Updated flex-direction to row */
+            align-items: center; /* Added align-items: center; */
+            flex: 1; /* Added flex: 1; */
+        }
+        .form-column-num {
+            margin-bottom: 6px;
+            display: flex; /* Added display: flex; */
+            flex-direction: row; /* Updated flex-direction to row */
+            align-items: center; /* Added align-items: center; */
+            flex: 1; /* Added flex: 1; */
+        }
+        .form-column-gpt {
+            margin-bottom: 50px;
+            display: flex; /* Added display: flex; */
+            flex-direction: row; /* Updated flex-direction to row */
+            align-items: center; /* Added align-items: center; */
+            flex: 1; /* Added flex: 1; */
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button[type="submit"] {
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #555;
+        }
+
+        /* Styles for the tweets section */
+        .tweets {
+            margin: 20px;
+        }
+
+        .tweets-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .tweet {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            padding: 15px;
+            width: 100%; 
+        }
+
+        .tweet-text {
+            margin-bottom: 10px;
+        }
+
+        .tweet-author {
+            margin-bottom: 10px;
+        }
+
+        .tweet-date {
+            font-size: 0.8em;
+            color: #999;
+        }
+
+        /* Styles for the charts */
+
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+
+
+        /* Styles for the overall layout */
+        .sentiment-analysis-dashboard .content-wrapper {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .sentiment-analysis-dashboard .pie-chart {
+            float: left;
+            width: 40%;
+        }
+
+        .sentiment-analysis-dashboard .line-chart {
+            max-width: 200%; /* Updated max-width to 200% */
+            margin: 20px;
+        }
+
+        .sentiment-analysis-dashboard {
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+
+        .tweets {
+            width: 50%;
+        }
+
+        .pie-chart {
+            width: 25%;
+        }
+
+        .line-chart {
+            max-width: 200%; /* Updated max-width to 200% */
+        }
+    </style>
+    <div class="sentiment-analysis-dashboard">
+        <header>
+            <h1>Sentiment Analysis Dashboard</h1>
+        </header>
+
+        <style>
+            /* Existing styles */
+
+            .form-column {
+                display: inline-block;
+                margin-right: 10px;
+            }
+
+            /* New styles */
+
+            .form-column label,
+            .form-column input,
+            .form-column select {
+                display: inline-block;
+                vertical-align: middle;
+            }
+
+            .form-column label {
+                width: 100px;
+            }
+
+            .form-column input,
+            .form-column select {
+                width: 140px;
+            }
+
+            .form-column button {
+                margin-top: 10px;
+            }
+
+            
+            .form-column-num {
+                display: inline-block;
+                margin-right: 10px;
+            }
+
+            /* New styles */
+
+            .form-column-num label,
+            .form-column-num input,
+            .form-column-num select {
+                display: inline-block;
+                vertical-align: middle;
+            }
+
+            .form-column-num label {
+                width: 100px;
+            }
+
+            .form-column-num input,
+            .form-column-num select {
+                width: 50px;
+            }
+
+            .form-column-num button {
+                margin-top: 10px;
+            }
+        </style>
         <form method="POST" action="{{ url_for('routes.brand_tweets', brand_id=brand_id) }}">
-            <label for="start_date">Start Date:</label>
-            <input type="date" id="start_date" name="start_date">
+            <section class="filters">
 
-            <label for="end_date">End Date:</label>
-            <input type="date" id="end_date" name="end_date">
 
-            <label>Sentiments:</label>
-            <select multiple name="sentiments">
-                <option value="Positivo">Positivo</option>
-                <option value="Negativo">Negativo</option>
-                <option value="Neutral">Neutral</option>
-            </select>
-
-            <label for="priority_filter">Priority:</label>
-            <select name="priority_filter">
-                <option value="recent">Most Recent</option>
-                <option value="popular">Most Popular</option>
-            </select>
-
-            <label for="num_tweets">Number of Tweets:</label>
-            <input type="number" id="num_tweets" name="num_tweets" min="1" max="100" value="5">
-
-            <button type="submit">Apply Filters</button>
+                <div class="form-column">
+                    <label for="start-date">Start Date</label>
+                    <input type="date" id="start-date" name="start-date">
+                </div>
+                <div class="form-column">
+                    <label for="end-date">End Date</label>
+                    <input type="date" id="end-date" name="end-date">
+                </div>
+                <div class="form-column">
+                    <select name="priority_filter">
+                        <option value="recent">Most Recent</option>
+                        <option value="popular">Most Popular</option>
+                    </select>
+                </div>
+                <div class="form-column-num">
+                    <label for="num_tweets">Number of Tweets:</label>
+                    <input type="number" id="num_tweets" name="num_tweets" min="1" max="100" value="5">
+                </div>
+                <div class="form-column" >
+                    <fieldset>
+                        <input type="checkbox" name="sentiment" value="Positivo">Positive</input>
+                        <input type="checkbox" name="sentiment" value="Negativo">Negative</input>
+                        <input type="checkbox" name="sentiment" value="Neutral">Neutral</input>
+                    </fieldset>
+                </div>
+                <div class="form-column">
+                    <button type="submit">Filtrar</button>
+                </div>
+            </section>
         </form>
-    </section>
-
-    <!-- Rest of the HTML remains unchanged -->
-
-
-
-
-    <section class="tweets">
-        <h2>Tweets</h2>
-        <div class="tweets-list">
-            {% for tweet in tweets %}
-                <li>
-                    <div class="tweet-content">
-                        <p>{{ tweet.text }}</p>
-                        <p class="tweet-author">@{{ tweet.user_name }}</p>
-                        <p class="tweet-date">{{ tweet.created_at }}</p>
-                    </div>
-                </li>
-            {% endfor %}
-        </div>
-    </section>
-
-    <section class="line-chart">
-        <h2>Evolución de sentimientos</h2>
-        <canvas id="line-chart"></canvas>
-    </section>
-    
-    <section class="pie-chart">
-        <h2>Distribución de sentimientos</h2>
-        <canvas id="pie-chart"></canvas>
-    </section>
-
-    <script>
         
         
-        var pie_chart_d="{{pie_chart_data}}"
-        var correctedString1 = pie_chart_d.replace(/&#34;/g, '"');
-        var pie_chart_data = JSON.parse(correctedString1); // The JSON object as a string
-        var line_chart_d="{{line_chart_data}}"
-        var correctedString2 = line_chart_d.replace(/&#34;/g, '"');
-        var line_chart_data = JSON.parse(correctedString2); // The JSON object as a string
-        //var pie_chart_data = JSON.parse('{"datasets": [ {"data": [5, 9, 8] } ] ,"labels": ["Positivos", "Negativos", "Neutros"] }'); // The JSON object as a string
-        //var line_chart_data = JSON.parse('{"labels": ["2023-11-09", "2023-11-10"], "datasets": [{"label": "Positivos", "data": [0, 5]}, {"label": "Negativos", "data": [0, 9]}, {"label": "Neutros", "data": [1, 7]}]}'); // The JSON object as a string
-        
-        var pieChart = new Chart(document.getElementById('pie-chart'), {
-            type: 'pie',
-            data: pie_chart_data,
-        });
+       
 
-        var lineChart = new Chart(document.getElementById('line-chart'), {
-            type: 'line',
-            data: line_chart_data,
-        });
-    </script>
+        <section class="sentiment-analysis-dashboard">
+            <header>
+                <h1>Sentiment Analysis Dashboard</h1>
+            </header>
+
+            <div class="content-wrapper">
+                <section class="tweets">
+                    <ul class="tweets-list">
+                        {% for tweet in tweets %}
+                        <li class="tweet">
+                            <div class="tweet-content">
+                                <p class="tweet-text">{{ tweet.text }}</p>
+                            </div>
+                            <p class="tweet-date">{{ tweet.created_at }}</p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </section>
+                <section class="pie-chart">
+                    <h2>Distribution of Sentiments</h2>
+                    <canvas id="pie-chart"></canvas>
+                </section>
+            </div>
+        </section>
+
+
+        <section class="line-chart">
+            <h2>Distribution of Sentiments</h2>
+            <canvas id="line-chart"></canvas>
+        </section>
+
+
+        <script>
+            var pie_chart_d = "{{pie_chart_data}}";
+            var correctedString1 = pie_chart_d.replace(/&#34;/g, '"');
+            var pie_chart_data = JSON.parse(correctedString1);
+
+            var line_chart_d = "{{line_chart_data}}";
+            var correctedString2 = line_chart_d.replace(/&#34;/g, '"');
+            var line_chart_data = JSON.parse(correctedString2);
+
+            var pieChart = new Chart(document.getElementById('pie-chart'), {
+                type: 'pie',
+                data: pie_chart_data,
+            
+            });
+
+            var lineChart = new Chart(document.getElementById('line-chart'), {
+                type: 'line',
+                data: line_chart_data,
+            });
+        </script>
+    </div>
 </body>
-
 </html>

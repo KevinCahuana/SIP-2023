@@ -75,6 +75,33 @@
             bottom: 0;
             width: 100%;
         }
+        .form-column {
+                display: inline-block;
+                margin-right: 10px;
+        }
+
+        /* New styles */
+
+        .form-column label,
+        .form-column input,
+        .form-column select {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .form-column label {
+            width: 100px;
+        }
+
+        .form-column input,
+        .form-column select {
+            width: 140px;
+        }
+
+        .form-column button {
+            margin-top: 10px;
+        }
+
     </style>
 </head>
 <body>
@@ -95,13 +122,21 @@
         {% endfor %}
         </ul>
 
-        <div class="add-brand">
-            <h3>Add a brand</h3>
+        
+            
             <form action="/add-brand" method="post">
-                <input type="text" name="brand_name" placeholder="Brand name">
+                <div class="add-brand">
+                    <h3>Add a brand</h3>
+                    <input type="text" name="brand_name" placeholder="Brand name"  multiple size="2">  
+                </div>
+                <div class="add-brand">
+                    <label for="brand_description">Descripción de la marca:</label>
+                    <textarea id="brand_description" name="brand_description" required style="height: 50px; width: 300px;"></textarea>
+                </div>
                 <button type="submit">Add brand</button>
+                
             </form>
-        </div>
+
     </main>
 
     <footer>
